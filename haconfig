@@ -1,0 +1,433 @@
+title: Home
+views:
+  - title: Home
+    path: Home
+    type: sections
+    max_columns: 3
+    icon: mdi:home
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Time / Weather
+          - type: clock
+            clock_style: digital
+            clock_size: medium
+            show_seconds: false
+            no_background: false
+            grid_options:
+              columns: 12
+              rows: 1
+            face_style: markers
+          - type: weather-forecast
+            entity: weather.klwm
+            show_forecast: false
+
+          # --- Michael Emoji Person Card ---
+          - type: custom:mushroom-template-card
+            primary: Michael
+            secondary: >
+              {{ relative_time(states.person.michaeld.last_changed) }} ago
+            icon: mdi:emoticon-happy-outline
+            icon_color: >
+              {% if is_state('person.michaeld', 'home') %}
+                green
+              {% elif is_state('person.michaeld', 'away') %}
+                orange
+              {% else %}
+                grey
+              {% endif %}
+            multiline_secondary: false
+            tap_action:
+              action: more-info
+            chips:
+              - type: template
+                icon: mdi:battery
+                icon_color: >
+                  {% set batt = states('sensor.pixel_8_battery_level') | int(0) %}
+                  {% if batt >= 80 %} green
+                  {% elif batt >= 40 %} orange
+                  {% else %} red
+                  {% endif %}
+                content: "{{ states('sensor.pixel_8_battery_level') | int(0) }}%"
+              - type: template
+                icon: mdi:wifi
+                icon_color: >
+                  {% if is_state('sensor.pixel_8_wifi_connection', 'connected') %}
+                    green
+                  {% else %}
+                    red
+                  {% endif %}
+                content: "{{ states('sensor.pixel_8_wifi_connection') }}"
+            card_mod:
+              style: |
+                ha-card {
+                  text-align: center;
+                  border-radius: 16px;
+                  padding: 8px;
+                  font-size: 16px;
+                }
+          # ---------------------------------
+
+          - type: heading
+            heading_style: title
+            heading: Alarms/Cameras
+          - type: entities
+            title: Lowell Alarm
+            entities:
+              - entity: switch.lowell_alarm_siren
+                name: Siren
+          - type: alarm-panel
+            entity: alarm_control_panel.lowell_alarm
+          - type: entities
+            title: Front Door
+            entities:
+              - entity: switch.front_door_in_home_chime
+                name: In-home chime
+              - entity: switch.front_door_motion_detection
+                name: Motion detection
+              - entity: number.front_door_volume
+                name: Volume
+              - entity: sensor.front_door_last_activity
+                name: Last activity
+          - type: picture-entity
+            entity: camera.front_door_live_view
+          - type: entities
+            title: Kitchen Camera
+            entities:
+              - entity: switch.kitchen_motion_detection
+                name: Motion detection
+              - entity: siren.kitchen_siren
+                name: Siren
+              - entity: number.kitchen_volume_2
+                name: Volume
+              - entity: sensor.kitchen_last_activity
+                name: Last activity
+          - type: picture-entity
+            entity: camera.kitchen_live_view
+          - type: entities
+            title: Living Room Camera
+            entities:
+              - entity: switch.living_room_motion_detection
+                name: Motion detection
+              - entity: siren.living_room_siren
+                name: Siren
+              - entity: number.living_room_volume_2
+                name: Volume
+              - entity: sensor.living_room_last_activity
+                name: Last activity
+          - type: picture-entity
+            entity: camera.living_room_live_view
+          - type: entities
+            title: Spotlight Cam
+            entities:
+              - entity: light.spotlight_cam_light
+                name: Light
+              - entity: switch.spotlight_cam_motion_detection
+                name: Motion detection
+              - entity: siren.spotlight_cam_siren
+                name: Siren
+              - entity: number.spotlight_cam_volume
+                name: Volume
+              - entity: sensor.spotlight_cam_last_activity
+                name: Last activity
+          - type: picture-entity
+            entity: camera.spotlight_cam_live_view
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Lights and Switches
+          - type: entities
+            title: Nest Thermostat
+            entities:
+              - entity: climate.living_room
+                name: Living Room Thermostat
+              - entity: sensor.living_room_temperature
+                name: Temperature
+              - entity: sensor.living_room_humidity
+                name: Humidity
+            footer:
+              type: buttons
+              entities:
+                - entity: climate.living_room
+                  name: View Controls
+                  tap_action:
+                    action: more-info
+                - entity: climate.living_room
+                  name: Diagnostics
+                  tap_action:
+                    action: navigate
+                    navigation_path: /config/devices/device/your_device_id_here
+          - type: entities
+            title: Kitchen
+            entities:
+              - light.kitchen
+              - entity: light.kitchen_light
+                name: Light
+            footer:
+              type: buttons
+              entities:
+                - entity: scene.kitchen_relax
+                  name: Relax
+                - entity: scene.kitchen_sleepy
+                  name: Sleepy
+                - entity: scene.kitchen_blossom
+                  name: Blossom
+                - entity: scene.kitchen_read
+                  name: Read
+                - entity: scene.kitchen_bright
+                  name: Bright
+                - entity: scene.kitchen_warm_embrace
+                  name: Warm embrace
+                - entity: scene.kitchen_nightlight
+                  name: Nightlight
+          - type: entities
+            title: Living Room
+            entities:
+              - light.hallway_light
+              - light.lamp_1
+              - light.lamp_2
+              - light.lamp_3
+              - light.living_room
+              - sensor.klwm_relative_humidity
+              - sensor.klwm_temperature
+            footer:
+              type: buttons
+              entities:
+                - entity: scene.living_room_sleepy
+                  name: Sleepy
+                - entity: scene.living_room_warm_embrace
+                  name: Warm embrace
+                - entity: scene.living_room_bright
+                  name: Bright
+                - entity: scene.living_room_blossom
+                  name: Blossom
+                - entity: scene.living_room_nightlight
+                  name: Nightlight
+                - entity: scene.living_room_relax
+                  name: Relax
+                - entity: scene.living_room_read
+                  name: Read
+          - type: entities
+            title: Hue Go
+            entities:
+              - light.hue_go
+              - light.hue_go_2
+            footer:
+              type: buttons
+              entities:
+                - entity: scene.hue_go_read
+                  name: Read
+                - entity: scene.hue_go_blossom
+                  name: Blossom
+                - entity: scene.hue_go_relax
+                  name: Relax
+                - entity: scene.hue_go_sleepy
+                  name: Sleepy
+                - entity: scene.hue_go_nightlight
+                  name: Nightlight
+                - entity: scene.hue_go_bright
+                  name: Bright
+                - entity: scene.hue_go_warm_embrace
+                  name: Warm embrace
+                - entity: scene.hue_go_warm_embrace_2
+                  name: Warm embrace 2
+          - type: entities
+            title: Smart Switches / Plugs
+            entities:
+              - entity: light.fireplace
+                name: Fireplace
+                icon: mdi:power-socket-us
+              - entity: light.hallway_switch
+                name: Hallway Switch
+                icon: mdi:toggle-switch
+              - entity: light.kitchen_switch
+                name: Kitchen Switch
+                icon: mdi:toggle-switch
+              - entity: light.led_lamp
+                name: LED Lamp
+                icon: mdi:power-socket-us
+              - entity: light.living_room_switch
+                name: Living Room Switch
+                icon: mdi:toggle-switch
+          - type: entities
+            title: Cheri's Bedroom
+            entities:
+              - light.cheri_s_bedroom
+              - light.light_1
+              - light.light_2
+              - light.light_3
+          - type: entities
+            title: Livy's Bedroom
+            entities:
+              - light.bulb1
+              - light.bulb2
+              - light.bulb3
+          - type: entities
+            title: Loft
+            entities:
+              - entity: light.loft_1
+                name: '1'
+              - entity: light.loft_2
+                name: '2'
+              - entity: light.loft_3
+                name: '3'
+              - light.loft
+      - type: grid
+        cards:
+          - type: heading
+            heading_style: title
+            heading: Media Devices (Non-Plex)
+          - type: media-control
+            entity: media_player.tv_room
+          - type: media-control
+            entity: media_player.denon_avr_s730h_2
+          - type: media-control
+            entity: media_player.denon_avr_s730h
+          - type: media-control
+            entity: media_player.shield
+          - type: media-control
+            entity: media_player.shield_2
+          - type: media-control
+            entity: media_player.shield_3
+          - type: media-control
+            entity: media_player.bedroom_loft_speaker
+          - type: media-control
+            entity: media_player.lg_webos_tv_uh7700
+          - type: media-control
+            entity: media_player.xboxone
+          - type: entities
+            title: My Harmony
+            entities:
+              - entity: select.my_harmony_activities
+                name: Activities
+              - remote.my_harmony
+          - type: custom:atomic-calendar-revive
+            name: Media Calendars
+            entities:
+              - entity: calendar.sonarr
+                name: Sonarr
+                color: '#1e90ff'
+              - entity: calendar.radarr
+                name: Radarr
+                color: '#87cefa'
+              - entity: calendar.us_holidays
+                name: US Holidays
+                color: '#32cd32'
+            maxDaysToShow: 14
+            showColors: true
+            showLocation: false
+            showMonth: false
+            dateFormat: MMM D
+            timeFormat: h:mm a
+            showRelativeTime: true
+            showProgressBar: false
+            dimFinishedEvents: true
+            sortByStartTime: true
+            grid_options:
+              columns: 12
+              rows: 6
+          - type: entities
+            title: Plex
+            entities:
+              - entity: sensor.plex_certificate_expiry
+                name: Certificate expiry
+              - entity: sensor.plex_response_time
+                name: Response time
+              - entity: sensor.plex_status
+                name: Status
+          - type: entities
+            title: Overseerr
+            entities:
+              - entity: sensor.overseerr_available_requests
+                name: Available requests
+              - entity: sensor.overseerr_declined_requests
+                name: Declined requests
+              - entity: sensor.overseerr_movie_requests
+                name: Movie requests
+              - entity: sensor.overseerr_pending_requests
+                name: Pending requests
+              - entity: sensor.overseerr_processing_requests
+                name: Processing requests
+              - entity: sensor.overseerr_total_requests
+                name: Total requests
+              - entity: sensor.overseerr_tv_requests
+                name: TV requests
+          - type: heading
+            heading_style: title
+            heading: Network / Printer
+          - type: entities
+            title: Unifi UDM
+            entities:
+              - entity: sensor.unifi_udm_response_time
+                name: Response time
+              - entity: sensor.unifi_udm_status
+                name: Status
+          - type: entities
+            title: U6 Pro
+            entities:
+              - entity: sensor.u6_pro_response_time
+                name: Response time
+              - entity: sensor.u6_pro_status
+                name: Status
+          - type: entities
+            title: HP OfficeJet Pro 8030 series
+            entities:
+              - entity: sensor.hp_officejet_pro_8030_series_black_cartridge
+                name: Black cartridge
+              - entity: sensor.hp_officejet_pro_8030_series_cyan_cartridge
+                name: Cyan cartridge
+              - sensor.hp_officejet_pro_8030_series
+              - entity: sensor.hp_officejet_pro_8030_series_magenta_cartridge
+                name: Magenta cartridge
+              - entity: sensor.hp_officejet_pro_8030_series_yellow_cartridge
+                name: Yellow cartridge
+            grid_options:
+              columns: 12
+              rows: 5
+    header:
+      card:
+        type: markdown
+        content: |
+          {% set h = now().hour %}
+          {% if h < 12 %}
+          # 🌅 Good Morning, Michael!
+          {% elif h < 18 %}
+          # ☀️ Good Afternoon, Michael!
+          {% else %}
+          # 🌙 Good Evening, Michael!
+          {% endif %}
+          Welcome back to your smart home dashboard.
+    badges:
+      - type: entity
+        show_name: false
+        show_state: true
+        show_icon: true
+        entity: sensor.overseerr_pending_requests
+      - type: entity
+        show_name: false
+        show_state: true
+        show_icon: true
+        entity: sensor.mrdmoviebox
+      - type: entity
+        show_name: false
+        show_state: true
+        show_icon: true
+        entity: media_player.tv_room
+      - type: entity
+        show_name: false
+        show_state: true
+        show_icon: true
+        entity: sensor.adguard_home_dns_queries_blocked
+      - type: entity
+        show_name: false
+        show_state: true
+        show_icon: true
+        entity: event.front_door_motion
+      - type: entity
+        show_name: false
+        show_state: true
+        show_icon: true
+        entity: event.spotlight_cam_motion
